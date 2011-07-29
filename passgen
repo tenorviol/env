@@ -2,15 +2,20 @@
 
 # create a random password 10 characters long
 
+# TODO: accept -n password length parameter
+# TODO: accept character set parameter
+
 $set = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@$%^*_";
 #$set = "ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789_";
 
 $length = 10;
 
 open RAND, "/dev/random";
+# TODO: check that open RAND succeeded
+
 for ($i = 0; $i < $length; $i++) {
-    read RAND, $ch, 1;
-    print substr($set, ord($ch) % length($set), 1);
+  read RAND, $ch, 1;
+  print substr($set, ord($ch) % length($set), 1);
 }
 close RAND ;
 
