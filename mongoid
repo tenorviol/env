@@ -5,7 +5,7 @@ foreach ($_SERVER['argv'] as $arg) {
 	if (preg_match('/^[0-9a-fA-F]{24,24}$/', $arg)) {
 		$id = new MongoId($arg);
 		
-		$segmented = sprintf('%s %s %s %s', substr($id, 0, 8), substr($id, 8, 6), substr($id, 14, 4), substr($id, 18));
+		$segmented = sprintf('%s %s %s %s', substr($arg, 0, 8), substr($arg, 8, 6), substr($arg, 14, 4), substr($arg, 18));
 		
 		$time = $id->getTimestamp();
 		$date = date('Y-m-d H:s:i', $time);
