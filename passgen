@@ -1,15 +1,19 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 # create a random password 10 characters long
 
-$password_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@#$%^&*-_";
-#$password_chars = "ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789-_";
+$password_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@$%^*_";
+#$password_chars = "ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789_";
+
+$length = 10;
 
 open RANDOM, "/dev/random";
-for ($i = 0; $i < 10; $i++) {
+for ($i = 0; $i < $length; $i++) {
     read RANDOM, $random_chars, 1;
     print substr($password_chars, ord($random_chars) % length($password_chars), 1);
 }
 close RANDOM ;
 
 print "\n";
+
+exit 0;
