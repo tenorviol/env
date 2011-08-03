@@ -38,8 +38,8 @@ if ($opt_n =~ /^[1-9]\d*$/) {
 }
 
 # TODO: accept character set parameter
-$set = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@$%^*_";
-#$set = "ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789_";
+#$set = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@#\$%^&*()-_=+";
+$set = "ABCDEFGHIJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz123456789_";
 
 # read random characters from source
 $source = "/dev/random";
