@@ -48,7 +48,7 @@ for ($i = 0; $i < $n; $i++) {
   read RAND, $ch, 1;
   print substr($set, ord($ch) % length($set), 1);
 }
-close RAND ;
-
 print "\n";
+close RAND;
+
 exit 0;
