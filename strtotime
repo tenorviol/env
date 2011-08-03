@@ -23,12 +23,26 @@
  */
 
 /*
- * Convert all arguments to timestamps using php's strtotime function
+ * Convert the command line to a timestamp using php's strtotime function
  */
 
-foreach ($_SERVER['argv'] as $arg) {
-	$time = strtotime($arg);
-	if ($time) {
-		echo "$arg = $time\n";
-	}
+// command line
+$args = $_SERVER['argv'];
+array_shift($args);
+$str = implode($args);
+
+// conversion
+$time = false;
+if ($str) {
+	$time = strtotime($str);
 }
+
+// error output
+if ($time === false) {
+	echo "false\n";
+	exit(1);
+}
+
+// normal timestamp output
+echo "$time\n";
+exit(0);
