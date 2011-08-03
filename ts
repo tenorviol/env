@@ -23,31 +23,11 @@
  */
 
 /*
- * Convert all 24 hex character string arguments to their mongodb object id parts.
+ * Convert all numeric arguments from timestamps to dates.
  */
 
 foreach ($_SERVER['argv'] as $arg) {
-	if (preg_match('/^[0-9a-fA-F]{24,24}$/', $arg)) {
-		$id = new MongoId($arg);
-		
-		$segmented = sprintf('%s %s %s %s', substr($arg, 0, 8), substr($arg, 8, 6), substr($arg, 14, 4), substr($arg, 18));
-		
-		$time = $id->getTimestamp();
-		$date = date('Y-m-d H:s:i', $time);
-		$machine = substr($arg, 8, 6);
-		$pid = $id->getPID();
-		$inc = $id->getInc();
-		
-		echo <<<MONGOID
-
-MongoId("$id")
-         $segmented
-Timestamp : $time ($date)
-Machine   : $machine
-pid       : $pid
-increment : $inc
-
-
-MONGOID;
+	if (is_numeric($arg)) {
+		echo date('Y-m-d H:i:s', $arg)."\n";
 	}
 }
