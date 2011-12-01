@@ -1,0 +1,149 @@
+#!/usr/bin/env php
+<?php
+
+if (empty($_SERVER['argv'][1])) {
+  echo "Usage: binread <path>\n";
+  exit(1);
+}
+
+$path = $_SERVER['argv'][1];
+$fh = fopen($path, 'r');
+
+if ($fh === false) {
+  echo "Unable to open file, '$path'\n";
+  exit(1);
+}
+
+$out = new Utf8BinaryOutputFormatter($fh);
+$out->write();
+
+fclose($fh);
+
+exit(0);
+
+
+class Utf8BinaryOutputFormatter {
+  private $stream;
+  private $utf8 = null;
+  private $utf8count;
+  private $utf8marker;
+  private $unicode;
+  
+  public function __construct($stream) {
+    $this->stream = $stream;
+  }
+  
+  /**
+   * Translate the entire stream to visible bytes
+   * and send to stdout
+   */
+  public function write() {
+    $fh = $this->stream;
+    while (($c = fgetc($fh)) !== false) {
+      $this->interpretCharacter($c);
+    }
+    $this->dumpErroneousUtf8();
+  }
+  
+  /**
+   * Write non-high bit characters,
+   * process high bit characters as utf8
+   * @param string $c single byte
+   */
+  private function interpretCharacter($c) {
+    $ord = ord($c);
+    if ($ord < 0x80) {
+      $this->dumpErroneousUtf8();
+      $this->writeOrd($ord);
+    } else {
+      $this->processUtf8($c);
+    }
+  }
+  
+  /**
+   * Add high bit characters to the utf8 character buffer.
+   * @param string $c single byte
+   */
+  private function processUtf8($c) {
+    $ord = ord($c);
+    
+    if (empty($this->utf8)) {
+      $this->utf8 = $c;
+      $this->utf8marker = 0;
+      if (($ord & 0xfe) === 0xfe) {
+        $this->dumpErroneousUtf8();
+        return;
+      } elseif (($ord & 0xfc) === 0xfc) {
+        $this->utf8count = 6;
+        $this->unicode = $ord & 0x01;
+      } elseif (($ord & 0xf8) === 0xf8) {
+        $this->utf8count = 5;
+        $this->unicode = $ord & 0x03;
+      } elseif (($ord & 0xf0) === 0xf0) {
+        $this->utf8count = 4;
+        $this->unicode = $ord & 0x07;
+      } elseif (($ord & 0xe0) === 0xe0) {
+        $this->utf8count = 3;
+        $this->unicode = $ord & 0x0f;
+      } elseif (($ord & 0xc0) === 0xc0) {
+        $this->utf8count = 2;
+        $this->unicode = $ord & 0x1f;
+      } else {
+        throw new Exception(sprintf('%x', $ord));
+      }
+      $this->utf8marker++;
+      return;
+    }
+    
+    $this->utf8 .= $c;
+    if (($ord & 0xc0) !== 0x80) {
+      $this->dumpErroneousUtf8();
+      return;
+    }
+    $this->unicode <<= 6;
+    $this->unicode |= ($ord & 0x3f);
+    $this->utf8marker++;
+    
+    if ($this->utf8marker === $this->utf8count) {
+      // TODO: check for invalid utf8 encodings (check the length)
+      $this->writeOrd($this->unicode);
+      $this->utf8 = null;
+    }
+  }
+  
+  /**
+   * Write any invalid utf8 string to stdout
+   * TODO: add color coding (and beeps?)
+   */
+  private function dumpErroneousUtf8() {
+    if (empty($this->utf8)) {
+      return;
+    }
+    $len = strlen($this->utf8);
+    for ($i = 0; $i < $len; $i++) {
+      $this->writeOrd(ord($this->utf8[$i]));
+    }
+    $this->utf8 = null;
+  }
+  
+  /**
+   * Write a character ordinal to stdout
+   *
+   * @param int $ord character code
+   */
+  private function writeOrd($ord) {
+    if ($ord === ord("\n")) {
+      echo " \\n\n";
+    } elseif ($ord === ord("\t")) {
+      echo ' \t';
+    } elseif ($ord === ord("\r")) {
+      echo ' \r';
+    } elseif ($ord >= 0x20 && $ord < 0x7f) {
+      printf('  %s', chr($ord));
+    } elseif ($ord <= 0xff) {
+      printf(' %02x', $ord);
+    } else {
+      printf(' u%04x', $ord);
+    }
+  }
+}
