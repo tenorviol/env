@@ -1,0 +1,6 @@
+#!/bin/sh
+
+JUNIT_ROOT=/usr/local/junit
+export CLASSPATH=$CLASSPATH:$JUNIT_ROOT/junit-4.10.jar
+
+java org.junit.runner.JUnitCore $@
