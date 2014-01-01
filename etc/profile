@@ -1,0 +1,15 @@
+envRoot=$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" )
+
+export PATH=$PATH:$envRoot/bin
+export HISTCONTROL=erasedups
+export HISTFILESIZE=5000
+
+export SBT_OPTS=-XX:MaxPermSize=256m
+
+alias ll='ls -l'
+
+# git branch in prompt
+function parse_git_branch {
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
+}
+PS1="\h:\W\$(parse_git_branch) \u\$ "
