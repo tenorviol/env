@@ -5,7 +5,7 @@ while [ -h "$SOURCE" ]; do
   SOURCE="$(readlink "$SOURCE")"
   [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
 done
-envRoot=$( dirname "$( cd -P "$( dirname "$SOURCE" )" && pwd )" )
+envRoot=$( cd -P "$( dirname "$SOURCE" )" && pwd )
 
 export PATH=$PATH:$envRoot/bin
 export HISTCONTROL=erasedups
