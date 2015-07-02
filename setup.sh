@@ -3,10 +3,11 @@
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 
-### profile and gitconfig setup
+### .profile, .gitconfig, .gitignore setup
 
 echo "source '$DIR/profile.sh'" > ~/.profile
 ln -s "$DIR/gitconfig" ~/.gitconfig
+ln -s "$DIR/gitignore" ~/.gitignore
 
 
 ### Homebrew setup
