@@ -36,6 +36,7 @@ brew tap homebrew/dupes
 brew install homebrew/dupes/grep
 
 binaries=(
+  ag
   git
   node
   postgres
