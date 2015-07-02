@@ -17,7 +17,10 @@ alias ll='ls -l'
 alias lla='ls -la'
 
 # git branch in prompt
+function prompt_prefix {
+  cat "$envRoot/prompt"
+}
 function parse_git_branch {
   git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/[\1]/'
 }
-PS1="\h:\W\$(parse_git_branch) \u\$ "
+PS1="\$(prompt_prefix):\W\$(parse_git_branch) \u\$ "
