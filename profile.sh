@@ -11,8 +11,6 @@ export PATH=$PATH:$envRoot/bin
 export HISTCONTROL=erasedups
 export HISTFILESIZE=5000
 
-export SBT_OPTS=-XX:MaxPermSize=256m
-
 alias ll='ls -l'
 alias lla='ls -la'
 
