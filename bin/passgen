@@ -34,7 +34,7 @@ if ($opt_n =~ /^[1-9]\d*$/) {
 } elsif ($opt_n) {
   die "-n should be a positive integer\n";
 } else {
-  $n = 10;
+  $n = 18;
 }
 
 # TODO: accept character set parameter
