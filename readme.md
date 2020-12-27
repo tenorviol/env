@@ -1,4 +1,0 @@
-environment setup
-=================
-
-    ./setup.sh
